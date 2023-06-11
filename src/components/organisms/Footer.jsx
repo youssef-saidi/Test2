@@ -32,7 +32,7 @@ const Footer = () => {
      
         </div>
         <div className='flex justify-center items-center h-16' style={{borderTopWidth: "1px", borderTop: "solid", borderTopColor: "#757682"}}>
-          <span className='text-white text-sm' >Copyright ©2023 HDSG All rights reserved</span>
+          <span className='text-white text-sm' >Copyright ©2023 All rights reserved</span>
         </div>
       </footer>
   )
