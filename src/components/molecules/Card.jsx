@@ -26,7 +26,7 @@ const Card = ({ data }) => {
                 :
                 <NavLink to={{ pathname: "/details" }}
                     state={{ data: data }}>
-                    <div key={data.id} className='flex flex-col shadow-lg w-56 rounded-md'>
+                    <div key={data.id} className='flex flex-col shadow-lg w-56 rounded-md hover:scale-90'>
                         <Image image={data.imageURL} />
                         <h1 className='text-black text-center text-bold text-xl'>{data.denomination}</h1>
 
