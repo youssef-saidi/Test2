@@ -5,7 +5,6 @@ import Star from '../components/atoms/Star';
 const Details = () => {
     const location = useLocation();
     const { data } = location.state;
-    console.log(data);
     return (
 
         <main className="profile-page mt-96">
@@ -24,11 +23,9 @@ const Details = () => {
                     <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
                         <div className="px-6">
                             <div className="flex flex-wrap justify-center">
-                                {/* <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center"> */}
                                 <div className="relative w-24 mt-5">
                                     <img src={data.imageURL} className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px" />
                                 </div>
-                                {/* </div> */}
                                 <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:justify-end justify-center self-center">
                                     <div className="py-6 px-3 mt-32 sm:mt-0 flex items-center">
 

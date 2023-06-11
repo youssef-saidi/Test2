@@ -1,6 +1,5 @@
 import React from 'react'
 import Card from '../molecules/Card'
-import { images } from '../../constants'
 import { useUsers } from '../../hooks'
 
 const Cards = () => {
