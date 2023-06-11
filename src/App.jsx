@@ -12,21 +12,21 @@ function App() {
 
   return (
     <>
-<BrowserRouter>
-      <ScrollToTop />
-      <Navbar />
-      <Routes>
+      <BrowserRouter>
+        <ScrollToTop />
+        <Navbar />
+        <Routes>
 
-        <Route exact path="/" element={<Home />} />
-        <Route exact path="/details" element={<Details />} />
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/details" element={<Details />} />
 
 
 
-        <Route path="*" element={<NotFoundPage />} />
+          <Route path="*" element={<NotFoundPage />} />
 
-      </Routes>
-      <Footer />
-    </BrowserRouter>
+        </Routes>
+        <Footer />
+      </BrowserRouter>
     </>
   )
 }

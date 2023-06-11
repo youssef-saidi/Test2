@@ -3,6 +3,8 @@ import axios from 'axios';
 import hmacsha1 from 'hmacsha1'
 import { v4 } from 'uuid'
 import useDidMount from './useDidMount';
+import { useDispatch } from 'react-redux';
+import { setUsersData } from '../app/slices/userSlice';
 
 const generateSignature = (appid, env, uri) => {
     var auth_signature_method = 'HMAC-SHA1';
@@ -21,14 +23,15 @@ const generateSignature = (appid, env, uri) => {
 
 
 
-const useUsers = () => {
+const useUsers = (items) => {
+    const dispatch = useDispatch()
 
     async function getImageById(image_id) {
         try {
             const appid = 'challenge_uprodit';
             const env = 'production';
             const uri = `https://api.uprodit.com/v2/profile/picture/f/${image_id}`;
-    
+
             const authHeader = generateSignature(appid, env, uri);
             const response = await axios.get(uri, {
                 responseType: 'arraybuffer',
@@ -36,17 +39,17 @@ const useUsers = () => {
                     Authorization: authHeader,
                 },
             });
-    
+
             const arrayBuffer = response.data;
             const uint8Array = new Uint8Array(arrayBuffer);
-    
+
             const textDecoder = new TextDecoder();
             const jsonString = textDecoder.decode(uint8Array);
-    
+
             const jsonObject = JSON.parse(jsonString);
             if (jsonObject.mimeType && jsonObject.b64Content) {
-            const dataUrl = "data:" + jsonObject.mimeType + ";base64," + jsonObject.b64Content;
-            return dataUrl;
+                const dataUrl = "data:" + jsonObject.mimeType + ";base64," + jsonObject.b64Content;
+                return dataUrl;
 
             }
             return null;
@@ -54,17 +57,19 @@ const useUsers = () => {
             console.error(error);
         }
     }
-    
+
 
     async function fetchImagesForUsers(userArray) {
         const data = []
         for (const user of userArray) {
             const url = await getImageById(user.image_id);
-            const userObj = {...user,
+            const userObj = {
+                ...user,
                 imageURL: url,
             };
             data.push(userObj);
         }
+        dispatch(setUsersData(data))
         setUsers(data);
 
     }
@@ -73,47 +78,82 @@ const useUsers = () => {
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const didMount = useDidMount(true);
-    useEffect(() => {
-        (async () => {
-            try {
+    // useEffect(() => {
+    //     (async () => {
+    //         try {
 
-                setLoading(true);
+    //             setLoading(true);
 
-                const appid = 'challenge_uprodit';
-                const env = 'production';
-                const uri = 'https://api.uprodit.com/v1/search/all?startIndex=0&maxResults=10&usecase=perso';
+    //             const appid = 'challenge_uprodit';
+    //             const env = 'production';
+    //             const uri = items ? `https://api.uprodit.com/v1/search/all?startIndex=0&maxResults=10&usecase=perso&items=${items}` : 'https://api.uprodit.com/v1/search/all?startIndex=0&maxResults=10&usecase=perso';
 
-                const authHeader = generateSignature(appid, env, uri);
-                const doc = await axios.get(uri, {
-                    headers: {
-                        'Authorization': authHeader
-                    },
-                });
+    //             const authHeader = generateSignature(appid, env, uri);
+    //             const doc = await axios.get(uri, {
+    //                 headers: {
+    //                     'Authorization': authHeader
+    //                 },
+    //             });
+    //             console.log(doc)
 
+    //             if (doc.data.length <= 0) {
+    //                 if (didMount) {
+    //                     setError('No  Users found.');
+    //                     setLoading(false);
+    //                 }
+    //             } else {
+    //                 if (didMount) {
+    //                     fetchImagesForUsers(doc.data)
 
-                if (doc.data.length <= 0) {
-                    if (didMount) {
-                        setError('No  Users found.');
-                        setLoading(false);
-                    }
-                } else {
-                    if (didMount) {
-                        fetchImagesForUsers(doc.data)
-                       
-                        setLoading(false);
-                    }
-                }
-                // }
-            } catch (err) {
-                if (didMount) {
-                    setLoading(false);
-                    setError(err?.message || 'Something went wrong.');
-                }
-            }
-        })();
-    }, []);
+    //                     setLoading(false);
+    //                 }
+    //             }
+    //         } catch (err) {
+    //             if (didMount) {
+    //                 setLoading(false);
+    //                 setError(err?.message || 'Something went wrong.');
+    //             }
+    //         }
+    //     })();
+    // }, []);
 
-    return { Users, isLoading, error };
+    
+  const fetchUsers = async (items) => {
+    try {
+      setLoading(true);
+
+      const appid = 'challenge_uprodit';
+      const env = 'production';
+      const uri = items
+        ? `https://api.uprodit.com/v1/search/all?startIndex=0&maxResults=10&usecase=perso&terms=${items}`
+        : 'https://api.uprodit.com/v1/search/all?startIndex=0&maxResults=10&usecase=perso';
+
+      const authHeader = generateSignature(appid, env, uri);
+      const doc = await axios.get(uri, {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
+      if (doc.data.length <= 0) {
+        if (didMount) {
+          setError('No Users found.');
+          setLoading(false);
+        }
+      } else {
+        if (didMount) {
+          fetchImagesForUsers(doc.data);
+          setLoading(false);
+        }
+      }
+    } catch (err) {
+      if (didMount) {
+        setLoading(false);
+        setError(err?.message || 'Something went wrong.');
+      }
+    }
+  };
+
+    return { Users, isLoading, error,fetchUsers };
 };
 
 export default useUsers;
