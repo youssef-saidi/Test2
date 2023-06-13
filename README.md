@@ -15,7 +15,7 @@
 
 <br>
 
-<img src="/Capture2.PNG" width="100%" />
+<img src="/public/Capture2.PNG" width="100%" />
 
 <br>
 
