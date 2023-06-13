@@ -37,3 +37,17 @@ Run react dev server:
 ```bash
 npm run dev
 ```
+
+<h3 align="center">Or to Use Docker</h3>
+
+Build the Docker image:
+
+```bash
+docker build -t react_image .
+```
+
+Run the Docker container:
+
+```bash
+docker run -d -p 5173:8080 react_image
+```
